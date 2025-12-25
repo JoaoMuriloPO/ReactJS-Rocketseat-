@@ -10,16 +10,30 @@
 <body>
     <div id="root"></div>
 
-    <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
     <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
     <script type="text/babel">
+
+        function Counter(){
+
+            const [counter, setCounter] = React.useState(0)
+
+            return (
+                <>
+                <p>contador: {counter}</p>
+                <button onClick={() => setCounter((prev) => prev + 1)}>acrementar</button>
+                <button onClick={() => setCounter((prev) => prev - 1)}>incrementar</button>
+                <button onClick={() => setCounter(0)}>limpar</button>
+                </>
+            )
+        }
+
         function App() {
             return (
-            <main class="p-3">
-                ...
+            <main>
+                <Counter/>
             </main>
         )
     }

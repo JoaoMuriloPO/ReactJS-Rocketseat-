@@ -74,7 +74,7 @@
             )
         }
 
-        function Button({ 
+        function Button({
             variant = "default",
             className,
             children,
@@ -93,15 +93,15 @@
                         
                         `
                     }
-                    ${...props} 
-                    >
+                    ${...props}
+                >
                     {children}
                 </Text>
             )
         }
 
-        function Card({children, className, ...props}){
-            return(
+        function Card({ children, className, ...props }) {
+            return (
                 <div className={`
                     bg-(--background) shadow-(--shadown)
                     rounded-2xl
@@ -109,105 +109,145 @@
                     
                     `}
                     ${...props}
-                    >
+                >
                     {children}
                 </div>
             )
         }
 
-        function CalculatorDisplay({operation, result}){
+        const buttons = [
+            [
+                { input: "CE" },
+                { input: "C", className: "flex-1 h-16" },
+                { input: "/", variant: "primary" }
+            ],
+
+            [
+                { input: "7" },
+                { input: "8" },
+                { input: "9" },
+                { input: "*", variant: "primary" }
+            ],
+
+            [
+                { input: "4" },
+                { input: "5" },
+                { input: "6" },
+                { input: "-", variant: "primary" }
+            ],
+
+            [
+                { input: "1" },
+                { input: "2" },
+                { input: "3" },
+                { input: "+", variant: "primary" }
+            ],
+
+            [
+                { input: "0", className: "flex-1 h-16" },
+                { input: "," },
+                { input: "=", className: "w-16 h-16 bg-[#7F45E2]" }
+            ]
+        ]
+
+        function CalculatorDisplay({ operation, result }) {
             return (
-                  <div className={`
+                <div className={`
                     flex flex-col gap-2 px-[1.375rem]
                     cursor-default select-none    
                         
                     `}>
-                        <Text as="div" 
+                    <Text as="div"
                         variant="muted"
-                        className="flex items-center justify-end">
-                            {operation}
-                        </Text>
+                        className="flex items-center justify-end h-7">
+                        {result && operation}
+                    </Text>
 
-                        <div className={`
-                        flex items-center justify-between    
+                    <div className={`
+                        flex items-center justify-between h-9   
                         `}>
-                            <Text variant="muted">=</Text>
-                            <Text variant="blast">{result}</Text>
+                        <Text variant="muted">=</Text>
+                        <Text variant="blast">{result || operation}</Text>
 
-                        </div>
                     </div>
+                </div>
             )
         }
-        
-        function Calculator(){
+
+        function Calculator() {
+
+            const [operation, setOperation] = React.useState("")
+            const [result, setResult] = React.useState("")
+
+            function handleInputClick(input) {
+                if (input === "=") {
+                    const operationResult = eval(operation.replace(/,/g, '.'))
+                    const parseResult = operationResult.toString()?.replace(/\./g, ',')
+                    setResult(operationResult)
+                    return;
+                }
+
+                if (input === "," && !operation.endsWith(",")) {
+                    setOperation(`${operation},`)
+                    return;
+                }
+
+
+
+                setOperation(`${operation} ${operation.endsWith(",") ? "" : " "} ${input}`)
+                setOperation(`${operation}${operation.endsWith(',') ? "" : " "}${input}`)
+
+            }
+
             return (
                 <Card className={`
                 flex flex-col gap-[1.625rem] w-[22.25rem]
                 pt-14 px-8 pb-8
                 `}>
-                  <CalculatorDisplay operation="1+1" result="2"/>
+                    <CalculatorDisplay
+                        operation={operation}
+                        result={result}
+                    />
 
-                    <div className="flex flex-col gap-3">
-                        <div className="flex gap-3">
-                        <Button className="w-16 h-16">CE</Button>
-                        <Button className="flex-1 h-16">C</Button>
-                        <Button className="w-16 h-16" variant="primary">/</Button>
-                        </div>
-                    </div>
 
-                    <div className="flex flex-col gap-3">
-                        <div className="flex gap-3">
-                        <Button className="w-16 h-16">7</Button>
-                        <Button className="w-16 h-16">8</Button>
-                        <Button className="w-16 h-16">9</Button>
-                        <Button className="w-16 h-16" variant="primary">X</Button>
+                    {buttons.map((row, index) =>
+                        <div key={`row-${index}`} className="flex flex-col gap-3">
+                            <div className="flex gap-3">
+                                {row.map(button =>
+                                    <Button
+                                        key={button.input}
+                                        className={button.className || "w-16 h-16"}
+                                        variant={button.variant}
+                                        onClick={() => handleInputClick(button.input)}
+                                    >
+                                        {button.input}
+                                    </Button>
+                                )}
+                            </div>
                         </div>
-                    </div>
+                    )}
 
-                    <div className="flex flex-col gap-3">
-                        <div className="flex gap-3">
-                        <Button className="w-16 h-16">4</Button>
-                        <Button className="w-16 h-16">5</Button>
-                        <Button className="w-16 h-16">6</Button>
-                        <Button className="w-16 h-16" variant="primary">-</Button>
-                        </div>
-                    </div>
 
-                    <div className="flex flex-col gap-3">
-                        <div className="flex gap-3">
-                        <Button className="w-16 h-16">1</Button>
-                        <Button className="w-16 h-16">2</Button>
-                        <Button className="w-16 h-16">3</Button>
-                        <Button className="w-16 h-16" variant="primary">+</Button>
-                        </div>
-                    </div>
 
-                      <div className="flex flex-col gap-3">
-                        <div className="flex gap-3">
-                        <Button className="flex-1 h-16">0</Button>
-                        <Button className="w-16 h-16">,</Button>
-                        <Button className="w-16 h-16" variant="primary">=</Button>
-                        </div>
-                    </div>
 
                 </Card>
             )
         }
 
-        function OperationHistory(){
-            return(
+        function OperationHistory() {
+            return (
                 <Card className="w-full py-10 px-8">
                     <Text as="h1"
-                    variant="heading"
-                    className="mb-4"
+                        variant="heading"
+                        className="mb-4"
                     >
-                    Historico de Operaçoes    
+                        Historico de Operaçoes
                     </Text>
 
                     <ul className="flex flex-col gap-3">
-                    <Text as="li">1 + 1 = 2</Text>
-                    <Text as="li">2 + 3 + 1 = 6</Text>
-                    <Text as="li">2 + 3 = 5</Text>
+                        <Text as="li">1 + 1 = 2</Text>
+                        <Text as="li">2 + 3 + 1 = 6</Text>
+                        <Text as="li">2 + 3 = 5</Text>
                     </ul>
                 </Card>
             )
@@ -221,8 +261,8 @@
                     items-center sm:items-stretch
                     gap-2
                     `}>
-                    <Calculator/>
-                    <OperationHistory/>
+                    <Calculator />
+                    <OperationHistory />
                 </main>
             )
         }

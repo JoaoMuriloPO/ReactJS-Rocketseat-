@@ -10,16 +10,29 @@
 <body>
     <div id="root"></div>
 
-    <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
     <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
     <script type="text/babel">
+
+        function ListNames(){
+            const [names] = React.useState(["ana", "joao", "fabiano", "claudinho"])
+
+
+            return (
+                <ul>
+                    {names.map((names, index) =>
+                    <li key={`${index} - ${names}`}>{names}</li>
+                    )}
+                </ul>
+            )
+        }
+
         function App() {
             return (
-            <main class="p-3">
-                ...
+            <main >
+                <ListNames/>
             </main>
         )
     }
