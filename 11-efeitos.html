@@ -67,7 +67,7 @@
             
             return (
             <main>
-                <button onClick>Mostra/ocultar contador</button>
+                <button onClick={()=> setShow(!show)}>Mostra/ocultar contador</button>
                 <hr/>
                 {show && <Counter/>}
             </main>
