@@ -1,6 +1,7 @@
 import { cva, type VariantProps } from "class-variance-authority";
 import Icon from "./icon";
 import Text from "./text";
+import SpinnerIcon from '../assets/icons/spinner.svg?react';
 
 export const buttonVariants = cva(
   `
@@ -10,19 +11,23 @@ export const buttonVariants = cva(
   {
     variants: {
       variant: {
-        primary: "bg-gray-200 hover:bg-pink-light",
+        primary: 'bg-gray-200 hover:bg-pink-light',
       },
       size: {
-        md: "h-14 py-4 px-5",
+        md: 'h-14 py-4 px-5',
       },
       disabled: {
-        true: "opacity-50 pointer-events-none",
+        true: 'opacity-50 pointer-events-none',
+      },
+      handling: {
+        true: 'pointer-events-none',
       },
     },
     defaultVariants: {
-      variant: "primary",
-      size: "md",
+      variant: 'primary',
+      size: 'md',
       disabled: false,
+      handling: false,
     },
   }
 );
@@ -54,9 +59,10 @@ export const buttonTextVariants = cva("", {
 });
 
 interface ButtonProps
-  extends Omit<React.ComponentProps<"button">, "size" | "disabled">,
+  extends Omit<React.ComponentProps<'button'>, 'size' | 'disabled'>,
     VariantProps<typeof buttonVariants> {
-  icon?: React.ComponentProps<typeof Icon>["svg"];
+  icon?: React.ComponentProps<typeof Icon>['svg'];
+  handling?: boolean;
 }
 
 export default function Button({
@@ -65,20 +71,22 @@ export default function Button({
   disabled,
   className,
   children,
-  icon: IconComponent,
+  handling,
+  icon,
   ...props
 }: ButtonProps) {
   return (
     <button
-      className={buttonVariants({ className, disabled, size, variant })}
+      className={buttonVariants({
+        className,
+        disabled,
+        size,
+        variant,
+        handling,
+      })}
       {...props}
     >
-      {IconComponent && (
-        <Icon
-          svg={IconComponent}
-          className={buttonIconVariants({ variant, size })}
-        />
-      )}
+      {icon && <Icon svg={handling ? SpinnerIcon : icon} animate={handling} />}
       <Text variant="body-md-bold" className={buttonTextVariants({ variant })}>
         {children}
       </Text>
